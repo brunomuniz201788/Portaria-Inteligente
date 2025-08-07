@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portaria Inteligente - Gestão de Acessos e Moradores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Portaria Inteligente</h1>
+        <p>Gestão de Acessos e Moradores</p>
+    </header>
+    <div class="container">
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="visitantes">Visitantes</button>
+            <button class="tab-button" data-tab="prestadores">Prestadores de Serviço</button>
+            <button class="tab-button" data-tab="moradores">Cadastrar Morador</button>
+            <button class="tab-button" data-tab="buscar-morador">Buscar Morador</button>
+        </nav>
+        <div class="content">
+            <section id="tab-visitantes" class="tab-content active">
+                <div class="registro-visitante-section">
+                    <h2>Novo Registro de Visitante</h2>
+                    <div class="camera-container">
+                        <div class="video-preview-wrapper">
+                            <p>Pré-visualização da Câmera</p>
+                            <video id="camera-video" autoplay style="display:none;"></video>
+                        </div>
+                        <div class="photo-preview-wrapper">
+                            <p>Foto Capturada</p>
+                            <canvas id="photo-canvas" style="display:none;"></canvas>
+                            <img id="photo-result" src="#" alt="Foto do Visitante" style="display:block; width: 320px; height: 240px; border: 1px solid #ccc; background-color: #eee;">
+                        </div>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="iniciar-camera-btn" class="action-btn">Iniciar Câmera</button>
+                        <button id="capturar-foto-btn" class="action-btn" disabled>Capturar Foto</button>
+                    </div>
+                    <form id="registro-form">
+                        <h3>Dados do Visitante</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="nome">Nome Completo:</label>
+                                <input type="text" id="nome" name="nome" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="documento">Documento (RG/CPF):</label>
+                                <input type="text" id="documento" name="documento" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="placa-veiculo">Placa do Veículo:</label>
+                                <input type="text" id="placa-veiculo" name="placa-veiculo">
+                            </div>
+                            <div class="form-field">
+                                <label for="observacoes-visitante">Observações:</label>
+                                <textarea id="observacoes-visitante" name="observacoes-visitante"></textarea>
+                            </div>
+                        </div>
+                        <h3>Dados do Morador Visitado</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="quem-visita-bloco">Bloco/Torre:</label>
+                                <input type="text" id="quem-visita-bloco" name="quem-visita-bloco">
+                            </div>
+                            <div class="form-field">
+                                <label for="quem-visita-apto">Apartamento:</label>
+                                <input type="text" id="quem-visita-apto" name="quem-visita-apto">
+                            </div>
+                        </div>
+                        <button type="submit" id="registrar-entrada-btn" class="action-btn">Registrar Entrada</button>
+                    </form>
+                </div>
+            </section>
+            
+            <section id="tab-prestadores" class="tab-content" style="display: none;">
+                <h2>Registro de Prestador de Serviço</h2>
+                <div class="registro-visitante-section">
+                    <div class="camera-container">
+                        <div class="video-preview-wrapper">
+                            <p>Pré-visualização da Câmera</p>
+                            <video id="camera-video-prestador" autoplay style="display:none;"></video>
+                        </div>
+                        <div class="photo-preview-wrapper">
+                            <p>Foto Capturada</p>
+                            <canvas id="photo-canvas-prestador" style="display:none;"></canvas>
+                            <img id="photo-result-prestador" src="#" alt="Foto do Prestador" style="display:block; width: 320px; height: 240px; border: 1px solid #ccc; background-color: #eee;">
+                        </div>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="iniciar-camera-prestador-btn" class="action-btn">Iniciar Câmera</button>
+                        <button id="capturar-foto-prestador-btn" class="action-btn" disabled>Capturar Foto</button>
+                    </div>
+                    <form id="registro-prestador-form">
+                        <h3>Dados do Prestador</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="prestador-nome">Nome Completo:</label>
+                                <input type="text" id="prestador-nome" name="prestador-nome" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="prestador-documento">Documento (RG/CPF):</label>
+                                <input type="text" id="prestador-documento" name="prestador-documento" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="prestador-empresa">Empresa:</label>
+                                <input type="text" id="prestador-empresa" name="prestador-empresa">
+                            </div>
+                            <div class="form-field">
+                                <label for="observacoes-prestador">Observações:</label>
+                                <textarea id="observacoes-prestador" name="observacoes-prestador"></textarea>
+                            </div>
+                        </div>
+                        <h3>Dados do Morador Visitado</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="prestador-visita-bloco">Bloco/Torre:</label>
+                                <input type="text" id="prestador-visita-bloco" name="prestador-visita-bloco">
+                            </div>
+                            <div class="form-field">
+                                <label for="prestador-visita-apto">Apartamento:</label>
+                                <input type="text" id="prestador-visita-apto" name="prestador-visita-apto">
+                            </div>
+                        </div>
+                        <button type="submit" id="registrar-prestador-btn" class="action-btn">Registrar Entrada</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="tab-moradores" class="tab-content" style="display: none;">
+                <h2>Cadastrar Novo Morador e Veículo</h2>
+                <div class="camera-container">
+                    <div class="video-preview-wrapper">
+                        <p>Pré-visualização da Câmera</p>
+                        <video id="camera-video-morador" autoplay style="display:none;"></video>
+                    </div>
+                    <div class="photo-preview-wrapper">
+                        <p>Foto Capturada</p>
+                        <canvas id="photo-canvas-morador" style="display:none;"></canvas>
+                        <img id="photo-result-morador" src="#" alt="Foto do Morador" style="display:block; width: 320px; height: 240px; border: 1px solid #ccc; background-color: #eee;">
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button id="iniciar-camera-morador-btn" class="action-btn">Iniciar Câmera</button>
+                    <button id="capturar-foto-morador-btn" class="action-btn" disabled>Capturar Foto</button>
+                </div>
+                <form id="cadastro-morador-form">
+                    <h3>Dados do Morador</h3>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="morador-nome">Nome Completo:</label>
+                            <input type="text" id="morador-nome" name="morador-nome" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="morador-documento">Documento (RG/CPF):</label>
+                            <input type="text" id="morador-documento" name="morador-documento" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="morador-bloco">Bloco:</label>
+                            <input type="text" id="morador-bloco" name="morador-bloco" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="morador-apartamento">Apartamento:</label>
+                            <input type="text" id="morador-apartamento" name="morador-apartamento" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                         <div class="form-field">
+                            <label for="morador-telefone">Telefone:</label>
+                            <input type="tel" id="morador-telefone" name="morador-telefone">
+                        </div>
+                    </div>
+
+                    <h3>Dados do Veículo (Opcional)</h3>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="veiculo-placa">Placa do Veículo:</label>
+                            <input type="text" id="veiculo-placa" name="veiculo-placa">
+                        </div>
+                        <div class="form-field">
+                            <label for="veiculo-modelo">Modelo do Veículo:</label>
+                            <input type="text" id="veiculo-modelo" name="veiculo-modelo">
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn">Cadastrar Morador e Veículo</button>
+                </form>
+            </section>
+
+            <section id="tab-buscar-morador" class="tab-content" style="display: none;">
+                <h2>Buscar Morador Específico</h2>
+                <form id="busca-morador-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="busca-morador-nome">Nome Completo:</label>
+                            <input type="text" id="busca-morador-nome" name="busca-morador-nome">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="busca-morador-bloco">Bloco/Torre:</label>
+                            <input type="text" id="busca-morador-bloco" name="busca-morador-bloco">
+                        </div>
+                        <div class="form-field">
+                            <label for="busca-morador-apartamento">Apartamento:</label>
+                            <input type="text" id="busca-morador-apartamento" name="busca-morador-apartamento">
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn">Buscar Morador</button>
+                </form>
+                
+                <div id="moradores-resultado" class="busca-resultado">
+                    <h3>Moradores Cadastrados (Exemplo)</h3>
+                    <div class="moradores-lista">
+                        <div class="morador-card">
+                            <img src="https://via.placeholder.com/100" alt="Foto do Morador 1">
+                            <div class="morador-info">
+                                <h4>João da Silva</h4>
+                                <p>Bloco A, Apartamento 101</p>
+                                <p>Documento: 123.456.789-00</p>
+                            </div>
+                        </div>
+                        <div class="morador-card">
+                            <img src="https://via.placeholder.com/100" alt="Foto do Morador 2">
+                            <div class="morador-info">
+                                <h4>Maria Oliveira</h4>
+                                <p>Bloco B, Apartamento 202</p>
+                                <p>Documento: 987.654.321-00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
